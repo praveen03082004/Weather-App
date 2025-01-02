@@ -116,5 +116,152 @@ img {
     margin-top: 10px;
 }
 
+/* main section */
 
-
+.main{
+    width: 100%;
+    min-width: 400px;
+    padding: 20px 40px;
+    position: relative;
+    padding-bottom: 90px;
+    background-color: rgb(230, 223, 223);
+}
+.main nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+nav .options{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+nav .options-units{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+nav .options button{
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 450;
+    cursor: pointer;
+    text-transform: capitalize;
+}
+.options button:active{
+    color: rgb(127, 191, 243);
+}
+nav .options-units button{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    color: #161515;
+    background-color: white;
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+}
+.options-units .celcius{
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+nav .options-units button:active{
+    color: #ffffff;
+    background-color: #1a1a1a;
+}
+.main .cards{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 50px;
+}
+.cards .card{
+    width: 100px;
+    height: 130px;
+    border-radius: 20px;
+    color: #1a1a1a;
+    background-color: #fff;
+    text-align: center;
+    padding: 10px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card h2{
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 auto;
+}
+.card .card-icon{
+    width: 50%;
+    margin: 0 auto;
+} 
+.card .day-temp{
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 50px;
+    gap: 3px;
+}
+.card .day-temp .temp{
+    font-weight: 50px;
+}
+ .day-temp .temp-unit{
+  padding-right: 45px;
+  align-items: center;
+}
+.highlights{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 150px;
+}
+.highlights .heading{
+    width: 100%;
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.highlights .card2{
+    width: 250px;
+    height: 150px;
+    border-radius: 20px;
+    color: #1a1a1a;
+    background-color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+}
+.card2 .card-heading{
+    color: #c2c2c2;
+}
+.card2 .content{
+    margin-top: 20px;
+}
+.card2 .content .uv-index{
+    text-align: center;
+    font-size: 30px;
+}
+.card2 .content .uv-text{
+    font-size: 15px;
+    margin-top: 20px;
+    text-align: left;
+}
+.credits .credits-para{
+   text-align: center;
+   font-size: 15px;
+   position: absolute;
+   bottom: 20px;
+   left: 50%;
+   transform: translatex(-50%);
+   font-weight: 550;
+   color: hsl(0, 5%, 4%);
+}
+.credits .credits-para span{
+    text-decoration: underline;
+    color: rgb(132, 28, 230);
+}
