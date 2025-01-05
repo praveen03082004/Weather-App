@@ -242,11 +242,11 @@ nav .options-units button:active{
 .card2 .content{
     margin-top: 20px;
 }
-.card2 .content .uv-index{
+.card2 .content p:first-child{
     text-align: center;
     font-size: 30px;
 }
-.card2 .content .uv-text{
+.card2 .content p:last-child{
     font-size: 15px;
     margin-top: 20px;
     text-align: left;
@@ -264,4 +264,5 @@ nav .options-units button:active{
 .credits .credits-para span{
     text-decoration: underline;
     color: rgb(132, 28, 230);
+    cursor: pointer;
 }
