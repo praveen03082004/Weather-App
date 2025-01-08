@@ -5,8 +5,6 @@ let condition=document.getElementById("condition")
 let perc=document.getElementById("rain")
 let curLocation=document.getElementById("location")
 let mainIcon = document.getElementById("weather-image")
-// let wIcon=document.getElementById("icon")
-// let searchArea=document.getElementById("searchArea")
 let searchLocation=document.getElementById("serLocat")
 let searchButton=document.getElementById("searchButton")
 
@@ -22,7 +20,11 @@ let visibilityStatus = document.querySelector(".visibility-status")
 let airQuality = document.querySelector(".air-quality")
 let airQualityStatus = document.querySelector(".air-quality-status")
 let weatherCards = document.querySelector("#weather-cards")
-
+let celciusBtn = document.querySelector(".celcius")
+let fahrenheitBtn = document.querySelector(".fahrenheit")
+let hourlyBtn = document.querySelector(".hourly")
+let weekBtn = document.querySelector(".week-active")
+let temperUnit = document.querySelectorAll(".temp-unit")
 
 let currentCity = ''
 let currentUnit = 'c'
@@ -109,9 +111,9 @@ searchLocation.addEventListener("keyup", (event) => {
         .then(response => response.json())
         .then((data)=>{
             console.log(data);
-            let today = data.currentConditions
+            let today = data.currentConditions;
             if(unit === "c"){
-                temp.innerText = today.temp
+                temp.innerText = today.temp;
             }
             else{
                 temp.innerText = celciusToFahrenheit(today.temp);
@@ -274,11 +276,11 @@ searchLocation.addEventListener("keyup", (event) => {
     function getHour(time){
         let hour = time.split(":")[0];
         let min = time.split(":")[1];
-        if(hour < 12){
+        if(hour > 12){
             hour = hour - 12;
             return `${hour}:${min} PM`
         }else{
-             return `${hour}:${min} PM`
+             return `${hour}:${min} AM`
         }
     }
 
@@ -308,9 +310,9 @@ searchLocation.addEventListener("keyup", (event) => {
             }
             let iconCondition = data[day].icon;
                 let iconSrc = getWeatherImg(iconCondition);
-                let tempUnit = "°C"
+                let temperUnit = "°C"
                 if(unit === "f"){
-                    tempUnit = "°F"
+                    temperUnit = "°F"
                 }
                 card.innerHTML = `
                  <h2 class="day-name">${dayName}</h2>
@@ -319,7 +321,7 @@ searchLocation.addEventListener("keyup", (event) => {
                     </div>
                     <div class="day-temp">
                         <h2 class="temp">${dayTemp}</h2>
-                        <span class="temp-unit">${tempUnit}</span>
+                        <span class="temp-unit">${temperUnit}</span>
                     </div>`;
             
             weatherCards.appendChild(card);
@@ -327,35 +329,34 @@ searchLocation.addEventListener("keyup", (event) => {
         }
    }
 
-  
+   fahrenheitBtn.addEventListener("click",()=>{
+        changeUnit("f");
+   })
 
+   celciusBtn.addEventListener("click",()=>{
+        changeUnit("c");
+   })
 
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////
-
-// function currentLocation(){
-//     fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/bangalore?unitGroup=metric&key=EJ6UBL2JEQGYB3AA4ENASN62J&contentType=json`)
-//     .then((res)=>{return res.json()})
-//     .then((curData)=>{
-//         console.log(curData);
-        
-//          today=curData.currentConditions;
-//         temp.innerText=today.temp;
-//         curLocation.innerHTML=curData.resolvedAddress;
-//         condition.innerText=today.conditions;
-//         perc.innerText="perc-"+today.precip+"%";
-//         visib.textContent = today.visibility
-//         humidity.textContent = today.humidity
-//         uvIndex.textContent = today.uvindex
-//     })
-// }
-// currentLocation()
-
-
-
-
-
-//weather Icons
+   function changeUnit(unit){
     
+        if(currentUnit !== unit){
+            currentUnit = unit;
+        {
+            temperUnit.forEach((ele) => {
+                ele.innerText = `°${unit.toUpperCase()}`;
+            });
+        if(unit === "c"){
+            celciusBtn.classList.add("active")
+            fahrenheitBtn.classList.remove("active")
+        }else{
+            celciusBtn.classList.remove("active")
+            fahrenheitBtn.classList.add("active")
+        }
+        // call get weather after change unit
+        getWeatherData(currentCity, currentUnit, hourlyorWeek);
+        }
+      }
+   }
+
+ 
 
