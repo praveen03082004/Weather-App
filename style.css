@@ -159,8 +159,8 @@ nav .options button{
     cursor: pointer;
     text-transform: capitalize;
 }
-.options button:active{
-    color: rgb(127, 191, 243);
+.options button.active{
+    color: var(--primary-clr);
 }
 nav .options-units button{
     width: 40px;
@@ -173,11 +173,8 @@ nav .options-units button{
     font-weight: 400;
     cursor: pointer;
 }
-.options-units .celcius{
-    background-color: #1a1a1a;
-    color: #ffffff;
-}
-nav .options-units button:active{
+
+.options-units button.active{
     color: #ffffff;
     background-color: #1a1a1a;
 }

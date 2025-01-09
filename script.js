@@ -23,7 +23,7 @@ let weatherCards = document.querySelector("#weather-cards")
 let celciusBtn = document.querySelector(".celcius")
 let fahrenheitBtn = document.querySelector(".fahrenheit")
 let hourlyBtn = document.querySelector(".hourly")
-let weekBtn = document.querySelector(".week-active")
+let weekBtn = document.querySelector(".active")
 let temperUnit = document.querySelectorAll(".temp-unit")
 
 let currentCity = ''
@@ -68,7 +68,7 @@ function geoLocation() {
     fetch("https://geolocation-db.com/json/")
         .then((response) => response.json())
         .then((data) => {
-            currentCity = data.currentCity;
+            currentCity = data.city;
             console.log(data);
             getWeatherData(data.city, currentUnit, hourlyorWeek);
         })
@@ -143,7 +143,7 @@ function getWeatherData(city, unit, hourlyorWeek) {
 
         })
         .catch((err) => {
-            console.log(err);
+            alert("city not found");
 
         })
 }
@@ -396,7 +396,7 @@ function changeTimeSpan(unit) {
             hourlyBtn.classList.remove("active");
             weekBtn.classList.add("active");
         }
-        getWeatherData(currentCity, currentUnit, hourlyorWeek)
+        getWeatherData(currentCity, currentUnit, hourlyorWeek);
     }
 }
 
