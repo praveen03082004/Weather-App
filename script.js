@@ -323,6 +323,30 @@ function updateForecast(data, unit, type) {
     }
 }
 
+function changeBackground(condition){
+    let body = document.querySelector("body");
+    let bg = "";
+    if (condition === "partly-cloudy-day") {
+        bg = "https://i.ibb.co/qNv7NxZ/pc.webp"
+    }
+    else if (condition === "partly-cloudy-night") {
+        bg =  "https://i.ibb.co/RDfPqXz/pcn.jpg"
+    }
+    else if (condition === "rain") {
+        bg =  "https://i.ibb.co/h2p6Yhd/rain.webp"
+    }
+    else if (condition === "clear-day") {
+        bg =  "https://i.ibb.co/WGry01m/cd.jpg"
+    }
+    else if (condition === "clear-night") {
+        bg =  "https://i.ibb.co/kqtZ1Gx/cn.jpg"
+    }
+    else {
+        bg =  "https://i.ibb.co/qNv7NxZ/pc.webp"
+    }
+    body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${bg}) `
+}
+
 fahrenheitBtn.addEventListener("click", () => {
     changeUnit("f");
 })
