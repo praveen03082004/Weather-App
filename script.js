@@ -11,6 +11,7 @@ let searchButton = document.getElementById("searchButton")
 let uvIndex = document.querySelector(".uv-index")
 let uvText = document.querySelector(".uv-text")
 let windSpeed = document.querySelector(".wind-speed")
+let windLevel = document.querySelector(".wind-level")
 let sunRice = document.querySelector(".sunrise")
 let sunSet = document.querySelector(".sunset")
 let humidity = document.querySelector(".humidity")
@@ -73,7 +74,7 @@ function geoLocation() {
             getWeatherData(data.city, currentUnit, hourlyorWeek);
         })
         .catch((err) => {
-            console.log(err);
+            alert("Unable to retrieve location. Please try again.");
         })
 }
 geoLocation();
@@ -88,25 +89,99 @@ searchLocation.addEventListener("keyup", (event) => {
 //Weather data
 searchButton.addEventListener("click", () => {
 
+    if (city.trim() === "") {
+        alert("Please enter a city name.");
+        return;
+    }
+
     fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=EJ6UBL2JEQGYB3AA4ENASN62J&contentType=json`)
         .then((res) => { return res.json() })
         .then((data) => {
             console.log(data);
-
+            currentCity = city;
             today = data.currentConditions;
+            curLocation.innerText = data.resolvedAddress;
             temp.innerText = today.temp;
-            curLocation.innerHTML = data.resolvedAddress;
             condition.innerText = today.conditions;
-            perc.innerText = "perc-" + today.precip + "%";
-            visibility.textContent = today.visibility
-            humidity.textContent = today.humidity
-            uvIndex.textContent = today.uvindex
+            perc.innerText = "Perc -" + today.precip + "%";
+            uvIndex.innerText = today.uvindex;
+            windSpeed.innerText = today.windspeed;
+            windLevel.textContent = "km/h"
+            humidity.innerText = today.humidity + "%"
+            visibility.innerText = today.visibility;
+            airQuality.innerText = today.winddir;
+            measureUvIndex(today.uvindex);
+            updateHumidityStatus(today.humidity);
+            updateVisibilityStatus(today.visibility);
+            updateAirQualityStatus(today.winddir);
+            sunRice.innerText = convertTimeTo12HourFormat(today.sunrise);
+            sunSet.innerText = convertTimeTo12HourFormat(today.sunset);
+            mainIcon.src = getWeatherImg(today.icon);
+            changeBackground(today.icon);
+
+
+
+            function updateForecast(data, unit, type) {
+                weatherCards.innerHTML = ""
+            
+                let day = 0
+                let numberCards = 0
+            
+                if (type == "day") {
+                    numberCards = 24;
+                }
+                else {
+                    numberCards = 7;
+                }
+                for (let i = 0; i < numberCards; i++) {
+                    let card = document.createElement("div");
+                    card.classList.add("card");
+                    // hour if hourly time and day name if weekly
+                    let dayName = getHour(data[day].datetime);
+                    if (type === "week") {
+                        dayName = getDayName(data[day].datetime);
+                    }
+                    let dayTemp = data[day].temp
+                    
+                    if (unit === "f") {
+                        dayTemp = celciusToFahrenheit(data[day].temp);
+                        temp.innerText = celciusToFahrenheit(data[day].temp);
+                    }
+                    let iconCondition = data[day].icon;
+                    
+                    let iconSrc = getWeatherImg(iconCondition);
+                    let temperUnit = "°C"
+                    if (unit === "f") {
+                        temperUnit = "°F"
+                    }
+                    card.innerHTML = `
+                             <h2 class="day-name">${dayName}</h2>
+                                <div class="card-icon">
+                                    <img src="${iconSrc}" id="imgSrc" alt="">
+                                </div>
+                                <div class="day-temp">
+                                    <h2 class="temp">${dayTemp}</h2>
+                                    <span class="temp-unit">${temperUnit}</span>
+                                </div>`;
+            
+                    weatherCards.appendChild(card);
+                    day++;
+                }
+            }
+
+            if (hourlyorWeek === "hourly") {
+                updateForecast(data.days[0].hours, currentUnit, "day")
+            }
+            else {
+                updateForecast(data.days, currentUnit, "week")
+            }
 
         })
 })
 
-////////////////////////////////////////////////////////////////////////////////////////////
+
 function getWeatherData(city, unit, hourlyorWeek) {
+    
     fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=EJ6UBL2JEQGYB3AA4ENASN62J&contentType=json`)
         .then(response => response.json())
         .then((data) => {
@@ -118,11 +193,13 @@ function getWeatherData(city, unit, hourlyorWeek) {
             else {
                 temp.innerText = celciusToFahrenheit(today.temp);
             }
-            curLocation.innerText = data.address;
+            curLocation.innerText = data.resolvedAddress;
             condition.innerText = today.conditions;
+            temp.innerText = today.temp;
             perc.innerText = "Perc -" + today.precip + "%";
             uvIndex.innerText = today.uvindex;
             windSpeed.innerText = today.windspeed;
+            windLevel.textContent = "km/h"
             humidity.innerText = today.humidity + "%"
             visibility.innerText = today.visibility;
             airQuality.innerText = today.winddir;
@@ -133,6 +210,7 @@ function getWeatherData(city, unit, hourlyorWeek) {
             sunRice.innerText = convertTimeTo12HourFormat(today.sunrise);
             sunSet.innerText = convertTimeTo12HourFormat(today.sunset);
             mainIcon.src = getWeatherImg(today.icon);
+            changeBackground(today.icon);
 
             if (hourlyorWeek === "hourly") {
                 updateForecast(data.days[0].hours, unit, "day")
@@ -165,7 +243,7 @@ function measureUvIndex(uvIndex) {
         uvText.innerText = "Moderate";
     } else if (uvIndex <= 7) {
         uvText.innerText = "High";
-    } else if (uvIndex <= 5) {
+    } else if (uvIndex <= 10) {
         uvText.innerText = "Very High";
     }
     else {
@@ -190,7 +268,7 @@ function updateHumidityStatus(humidity) {
 // function to get Visibility Status
 
 function updateVisibilityStatus(visibility) {
-    if (visibility <= 0.3) {
+    if (visibility <= 0.10) {
         visibilityStatus.innerText = "Dense Fog";
     } else if (visibility <= 0.16) {
         visibilityStatus.innerText = "Moderate Fog";
@@ -217,6 +295,11 @@ function updateAirQualityStatus(airQuality) {
         airQualityStatus.innerText = "Moderate";
     } else if (airQuality <= 150) {
         airQualityStatus.innerText = "Unhealthy for Sensitive Groups";
+        if(airQualityStatus.innerText = "Unhealthy for Sensitive Groups"){
+            airQualityStatus.style.display = "inline"
+        }else{
+            
+        }
     } else if (airQuality <= 200) {
         airQualityStatus.innerText = "Unhealthy";
     } else if (airQuality <= 250) {
@@ -299,8 +382,10 @@ function updateForecast(data, unit, type) {
             dayName = getDayName(data[day].datetime);
         }
         let dayTemp = data[day].temp
+        
         if (unit === "f") {
             dayTemp = celciusToFahrenheit(data[day].temp);
+            temp.innerText = celciusToFahrenheit(data[day].temp);
         }
         let iconCondition = data[day].icon;
         let iconSrc = getWeatherImg(iconCondition);
@@ -311,7 +396,7 @@ function updateForecast(data, unit, type) {
         card.innerHTML = `
                  <h2 class="day-name">${dayName}</h2>
                     <div class="card-icon">
-                        <img src="${iconSrc}" alt="">
+                        <img src="${iconSrc}" id="imgSrc" alt="">
                     </div>
                     <div class="day-temp">
                         <h2 class="temp">${dayTemp}</h2>
@@ -323,36 +408,38 @@ function updateForecast(data, unit, type) {
     }
 }
 
-function changeBackground(condition){
+function changeBackground(condition) {
     let body = document.querySelector("body");
     let bg = "";
     if (condition === "partly-cloudy-day") {
         bg = "https://i.ibb.co/qNv7NxZ/pc.webp"
     }
     else if (condition === "partly-cloudy-night") {
-        bg =  "https://i.ibb.co/RDfPqXz/pcn.jpg"
+        bg = "https://i.ibb.co/RDfPqXz/pcn.jpg"
     }
     else if (condition === "rain") {
-        bg =  "https://i.ibb.co/h2p6Yhd/rain.webp"
+        bg = "https://i.ibb.co/h2p6Yhd/rain.webp"
     }
     else if (condition === "clear-day") {
-        bg =  "https://i.ibb.co/WGry01m/cd.jpg"
+        bg = "https://i.ibb.co/WGry01m/cd.jpg"
     }
     else if (condition === "clear-night") {
-        bg =  "https://i.ibb.co/kqtZ1Gx/cn.jpg"
+        bg = "https://i.ibb.co/kqtZ1Gx/cn.jpg"
     }
     else {
-        bg =  "https://i.ibb.co/qNv7NxZ/pc.webp"
+        bg = "https://i.ibb.co/qNv7NxZ/pc.webp"
     }
     body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${bg}) `
 }
 
 fahrenheitBtn.addEventListener("click", () => {
     changeUnit("f");
+    
 })
 
 celciusBtn.addEventListener("click", () => {
     changeUnit("c");
+    
 })
 
 function changeUnit(unit) {
