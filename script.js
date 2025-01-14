@@ -296,9 +296,7 @@ function updateAirQualityStatus(airQuality) {
     } else if (airQuality <= 150) {
         airQualityStatus.innerText = "Unhealthy for Sensitive Groups";
         if(airQualityStatus.innerText = "Unhealthy for Sensitive Groups"){
-            airQualityStatus.style.display = "inline"
-        }else{
-            
+            airQualityStatus.style.fontSize = "14px"
         }
     } else if (airQuality <= 200) {
         airQualityStatus.innerText = "Unhealthy";
